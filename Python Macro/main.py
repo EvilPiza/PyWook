@@ -1,7 +1,8 @@
 # Made By Christian Fillmore
 
-import time as t
-import random as r
+import time
+from datetime import datetime
+import random
 import pyautogui as pag
 import asyncio
 import discord
@@ -51,36 +52,42 @@ class Start_Setup:
 # WEBHOOK
 ################################
 
-default_message = "Uh Oh!"
-
-async def Program(url, message, _type):
-    if _type == "MESSAGE":
-        async with aiohttp.ClientSession() as session:
-            webhook = Webhook.from_url(url, session = session)
-            embed = discord.Embed(title=message)
-            await webhook.send(embed=embed, username = "Py-Macro")
-
-    elif _type == "IMAGE":
-        async with aiohttp.ClientSession() as session:
-            webhook = Webhook.from_url(url, session = session)
-            _Image = discord.File(fp="screenshots/Screenshot.png")
-            await webhook.send(file=_Image, username = "Py-Macro")        
-
-def start(_type="MESSAGE", message=default_message, url=webhook_url):
-    loop = asyncio.new_event_loop()
-    loop.run_until_complete(Program(url, message, _type))
-    loop.close()
-
 if webhook_url == "":
     start_setup = Start_Setup()
     webhook_url = start_setup.OK_BUTTON()
-    print(webhook_url)
 
+async def Text(url, message, embed_color):
+    async with aiohttp.ClientSession() as session:
+        webhook = Webhook.from_url(url, session = session)
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+        message = f"[{current_time}] {message}"
+        embed = discord.Embed(title=message, color=discord.Color.from_rgb(embed_color[0], embed_color[1], embed_color[2]))
+        await webhook.send(embed=embed, username = "Py-Macro")
+
+async def Image_(url):
+    async with aiohttp.ClientSession() as session:
+        webhook = Webhook.from_url(url, session = session)
+        file = discord.File(fp="screenshots/Screenshot.png")
+        await webhook.send(file=file, username="Py-Macro")
+
+def start(_type="MESSAGE", message="Error Message Missing!", url=webhook_url, embed_color=(0,0,0)): 
+    if _type == "MESSAGE":
+        loop = asyncio.new_event_loop()
+        loop.run_until_complete(Text(url, message, embed_color))
+        loop.close()
+    
+    elif _type == "IMAGE":
+        loop = asyncio.new_event_loop()
+        loop.run_until_complete(Image_(url))
+        loop.close()
 
 ok = pys.screenshot("screenshots/Screenshot.png")
+
 
 ################################
 # MACRO
 ################################
 
-
+start("MESSAGE", "Starting Macro!", webhook_url, (52, 97, 235))
+start("IMAGE", "", webhook_url, ())
