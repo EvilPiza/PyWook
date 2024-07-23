@@ -11,7 +11,7 @@ import tkinter as tk
 import pyscreeze as pys
 from PIL import Image
 
-webhook_url = "https://discord.com/api/webhooks/1265373731518152715/z_naeqpD2FfrLFvOMaaSmJ6VYS_xvdXiwe26M4JM0LiRpasPCTsm9UAaKzoD2GJHe4WK"
+webhook_url = ""
 
 
 ################################
@@ -45,18 +45,13 @@ class Start_Setup:
         self.screen.quit()
         self.webhook_url = self.text_box.get()
         return str(self.webhook_url)
-    
-################################
-# MACRO
-################################
-
 
 
 ################################
 # WEBHOOK
 ################################
 
-message = "Uh Oh!"
+default_message = "Uh Oh!"
 
 async def Program(url, message, _type):
     if _type == "MESSAGE":
@@ -71,7 +66,7 @@ async def Program(url, message, _type):
             _Image = discord.File(fp="screenshots/Screenshot.png")
             await webhook.send(file=_Image, username = "Py-Macro")        
 
-def start(url, message, _type="MESSAGE"):
+def start(_type="MESSAGE", message=default_message, url=webhook_url):
     loop = asyncio.new_event_loop()
     loop.run_until_complete(Program(url, message, _type))
     loop.close()
@@ -82,7 +77,10 @@ if webhook_url == "":
     print(webhook_url)
 
 
-start(webhook_url, "Sending a Screenshot!")
-start(webhook_url, message, "IMAGE")
 ok = pys.screenshot("screenshots/Screenshot.png")
+
+################################
+# MACRO
+################################
+
 
