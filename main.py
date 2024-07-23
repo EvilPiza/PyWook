@@ -1,4 +1,4 @@
-# Made By Christian Fillmore / EvilPiza / ModernTimesCranberry
+# Made By Christian Fillmore
 
 import time as t
 import random as r
