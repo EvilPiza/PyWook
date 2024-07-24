@@ -1,16 +1,25 @@
-This is a work in progress for a roblox macro (made entirely in python)
+I've decided to turn this repo into a Python package,
 
-I havent decided the game but it uses discord webhooks, similar to Natro Macro
-
-
-if for whatever reason you want to make a macro using this the syntax for the macro part is
+Syntax to send a screenshot is:
 
 
-start("MESSAGE", "Starting Macro!", webhook_url, (52, 97, 235))  < For words
+image('put your webhook here or a webhook variable')
 
-start("IMAGE", webhook_url)                                      < For images
+and to send text it would be:
 
+message('webhook url', 'message text', (0, 0, 0) < last one is embed color NOT text color
 
-In words the first parameter is the type, the second is the test, the third is webhool_url, and the last is color.
+Some variables you might care about
 
-Images the first parameter is the type, second is webhook_url
+show_time              < Shows the time when a message is being sent
+
+webhook_username       < Overrides the webhook name. Dependant on custom_webhook_user. Leaving this blank disables custom_webhook_user.
+
+custom_webhook_user    < Allows you to have a custom webhook name
+
+image_path             < The path to store the image with the name of the file (ex: "screenshots/Screenshot.png")
+
+webhook_gui            < If webhook URL is left as blank a gui will appear asking the user to paste one
+
+custom_gui             < Allows you to have a custom webhook gui
+
