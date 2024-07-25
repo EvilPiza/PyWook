@@ -165,8 +165,8 @@ def image(url=webhook_url):
     loop.run_until_complete(Image_(url))
     loop.close()
 
-def error(error, color=(255, 0, 0)):
-    message(f"The Macro failed! (Error '{error}')", color, True)
+def mention_mess(text, color=(255, 0, 0)):
+    message(text, color, True)
     image()
 
 import time 
