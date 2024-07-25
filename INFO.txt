@@ -1,0 +1,41 @@
+The syntaxes for the functions are:
+
+
+mention_mess(str, (rgb values))  < Rgb values could be replaced to some built in presets
+
+message(str, (rgb values)	 < Same thing for mention_mess, rgb could be replaced
+
+image()				 < Sends a screenshot of whats currently on screen
+
+
+Some variables you 100% should change is:
+
+default_webhook_url 		 < It is supposed to equal the user's webhook url, in quotes!
+
+user_id				 < This has to equal the user who wants to be mentioned from mention_mess, should equal an int
+
+image_path			 < This is the path of where the screenshot is stored, it reuses the same image.
+
+
+Some optional variables that aren't as important but still exist are:
+
+show_time			 < Shows the current time in 24:00 H:M:S format, takes a bool value
+
+webhook_username		 < Overwrites the name of the webhook's name to whatever you want, takes a str
+
+webhook_gui			 < Shows a gui when default_webhook_url is set to nothing, doesn't matter much, takes a bool value
+
+custom_gui			 < If you want a custom webhook_gui, set this to true and webhook_gui to false. Takes a bool
+
+default_embed_color		 < The default embed color for messages, takes rgb values or any color presets
+
+
+All the color presets:
+
+"red", "blue", "green", "light red", "light blue", "light green", "dark red", "dark blue", "dark green", "white", "black", "magenta", "cyan", "yellow", "orange", "purple"
+
+It isn't case sensitive so don't worry.
+
+
+I'd recommend editing this script to fit your needs instead of messing with the variables, the code is simple and (somewhat) organized.
+
