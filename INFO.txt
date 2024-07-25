@@ -39,4 +39,4 @@ It isn't case sensitive so don't worry.
 
 I'd recommend editing this script to fit your needs instead of messing with the variables, the code is simple and (somewhat) organized.
 
-PS I tried to make using this super simple (even for someone who has little knowledge of coding) and not have too many functions or variables. But honestly, having a lot of functions and variables or parameters are so lame, and if you disagree, fight me.
+PS I tried to make using this super simple (even for someone who has little knowledge of coding) and not have too many functions or variables. But honestly, having a lot of functions and variables or parameters is so lame, and if you disagree, fight me.
