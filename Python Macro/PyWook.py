@@ -1,4 +1,4 @@
-# PyHook
+PyWook_Ver = "0.1.0"
 # Made By Christian Fillmore
 
 import asyncio
