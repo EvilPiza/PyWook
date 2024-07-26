@@ -32,7 +32,7 @@ custom_gui = False
 default_embed_color = (55, 103, 246)
 
 # You can replace 'default_embed_color' with words/presets:
-# "red", "blue", "green", "light red", "light blue", "light green", "dark red", "dark blue", "dark green", "white", "black", "magenta", "cyan", "yellow", "orange", "purple"
+presets = ("red", "blue", "green", "light red", "light blue", "light green", "dark red", "dark blue", "dark green", "white", "black", "magenta", "cyan", "yellow", "orange", "purple")
 
 
 ################################
@@ -73,7 +73,7 @@ class Webhook_Gui:
 ################################
 
 def str_to_int_color(color):
-    if type(color) is str:
+    if isinstance(color, str):
         color = color.lower()
         match color:
             case "red":
@@ -153,22 +153,80 @@ async def Image_(url):
         else:
             await webhook.send(file=file)
 
-def message(message="", embed_color=default_embed_color, error=False, url=webhook_url):
-    if type(embed_color) is str:
-        embed_color = str_to_int_color(embed_color)
+def message(message, embed_color=default_embed_color, url=webhook_url, error=False):
+    if isinstance(embed_color, str):
+        if embed_color in presets:
+            embed_color = str_to_int_color(embed_color)
+        print("The preset you entered doesn't exist!")
+        exit()
+    elif isinstance(embed_color, tuple):
+        if not embed_color[0] <= 255 or not embed_color[1] <= 255 or not embed_color[2] <= 255:
+            print("The embed color you entered doesn't exist! (Value above 255)")
+            exit()
+        elif embed_color[0] < 0 or embed_color[1] < 0 or embed_color[2] < 0:
+            print("The embed color you entered doesn't exist! (Value below 0)")
+            exit()
+    else:
+        print(f"Embed color is supposed to be type 'str' or type 'tuple', instead got type '{type(embed_color).__name__}'!")
+    if not isinstance(message, str):
+        print(f"The message is supposed to be type 'str' not '{type(message).__name__}'!")
+        exit()
+    if isinstance(url, str):
+        if url[:33] != "https://discord.com/api/webhooks/":
+            print("Your webhook url is invalid!")
+            exit()
+    else:
+        print(f"The webhook url is supposed to be type 'str' not '{type(url).__name__}'!")
+        exit()
     loop = asyncio.new_event_loop()
     loop.run_until_complete(Text(url, message, embed_color, error))
     loop.close()
 
 def image(url=webhook_url):
+    if isinstance(url, str):
+        if url[:33] != "https://discord.com/api/webhooks/":
+            print("Your webhook url is invalid!")
+            exit()
+    else:
+        print(f"The webhook url is supposed to be type 'str' not '{type(url).__name__}'!")
+        exit()
     loop = asyncio.new_event_loop()
     loop.run_until_complete(Image_(url))
     loop.close()
 
 def mention_mess(text, color=(255, 0, 0)):
-    message(text, color, True)
+    message(text, color, webhook_url, True)
     image()
 
 import time 
 time.sleep(5)
 pys.screenshot(image_path)
+
+
+################################
+# HELP FUNCTION
+################################
+
+def help():
+    print("""
+        ----------------------------------------------------------
+          
+          SYNTAX:
+
+          - message("text", (rgb values, or a preset in str form), "webhook url variable")
+
+          - image("webhook url variable")
+
+          - mention_mess("text", (rgb values, or a preset in str form))
+
+
+          IMPORTANT VARIABLES:
+
+          default_webhook_url           < Set this to a webhook url, make sure it's a str
+
+          image_path                    < Set this to a path, ex: "C:/users/John Doe/Desktop/Secret Coding Stash/image.png"
+
+          user_id                       < Set this to a discord user id (should be set to an int, NOT str)
+
+        ----------------------------------------------------------
+          """)
