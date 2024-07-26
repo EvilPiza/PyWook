@@ -1,4 +1,4 @@
-PyWook_Ver = "0.1.0"
+# PyWook
 # Made By Christian Fillmore
 
 import asyncio
@@ -7,6 +7,9 @@ from discord import Webhook
 import aiohttp
 import pyscreeze as pys
 from PIL import Image
+from inspect import getframeinfo, stack
+from colorama import Fore, Back, Style
+import requests
 
 
 ################################
@@ -23,13 +26,15 @@ custom_webhook_user = True
 
 image_path = ""
 
-user_id = 000000000
+user_id = 0
 
 webhook_gui = False
 
 custom_gui = False
 
 default_embed_color = (55, 103, 246)
+
+file_name = ""
 
 # You can replace 'default_embed_color' with words/presets:
 presets = ("red", "blue", "green", "light red", "light blue", "light green", "dark red", "dark blue", "dark green", "white", "black", "magenta", "cyan", "yellow", "orange", "purple")
@@ -108,9 +113,6 @@ def str_to_int_color(color):
                 color = (247, 138, 5)
             case "purple":
                 color = (162, 5, 247)
-            case _:
-                print("Your input is not a preset, check your spelling!")
-                exit()
     return color
 
 if webhook_username == "":
@@ -154,29 +156,42 @@ async def Image_(url):
             await webhook.send(file=file)
 
 def message(message, embed_color=default_embed_color, url=webhook_url, error=False):
-    if isinstance(embed_color, str):
-        if embed_color in presets:
-            embed_color = str_to_int_color(embed_color)
-        print("The preset you entered doesn't exist!")
-        exit()
-    elif isinstance(embed_color, tuple):
-        if not embed_color[0] <= 255 or not embed_color[1] <= 255 or not embed_color[2] <= 255:
-            print("The embed color you entered doesn't exist! (Value above 255)")
-            exit()
-        elif embed_color[0] < 0 or embed_color[1] < 0 or embed_color[2] < 0:
-            print("The embed color you entered doesn't exist! (Value below 0)")
-            exit()
-    else:
-        print(f"Embed color is supposed to be type 'str' or type 'tuple', instead got type '{type(embed_color).__name__}'!")
     if not isinstance(message, str):
-        print(f"The message is supposed to be type 'str' not '{type(message).__name__}'!")
+        caller = getframeinfo(stack()[1][0])
+        print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Type Error (" + Fore.RED + f"{type(message).__name__}"+ Style.RESET_ALL +" -> " + Fore.GREEN + "str"+ Style.RESET_ALL +")"))
         exit()
     if isinstance(url, str):
         if url[:33] != "https://discord.com/api/webhooks/":
-            print("Your webhook url is invalid!")
+            caller = getframeinfo(stack()[1][0])
+            print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Value Error (Invalid Webhook URL)"))
             exit()
     else:
-        print(f"The webhook url is supposed to be type 'str' not '{type(url).__name__}'!")
+        caller = getframeinfo(stack()[1][0])
+        print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Type Error (" + Fore.RED + f"{type(url).__name__}"+ Style.RESET_ALL +" -> " + Fore.GREEN + "str"+ Style.RESET_ALL +")"))
+        exit()
+
+    if isinstance(embed_color, str):
+        if embed_color not in presets:
+            caller = getframeinfo(stack()[1][0])
+            print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Value Error (invalid string)"))
+            exit()
+        embed_color = str_to_int_color(embed_color)
+    elif isinstance(embed_color, tuple):
+        if not len(embed_color) == 3:
+            caller = getframeinfo(stack()[1][0])
+            print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Value Error (tuple has missing/overflow values)"))
+            exit() 
+        if not embed_color[0] <= 255 or not embed_color[1] <= 255 or not embed_color[2] <= 255:
+            caller = getframeinfo(stack()[1][0])
+            print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Value Error (tuple above 255)"))
+            exit()
+        elif embed_color[0] < 0 or embed_color[1] < 0 or embed_color[2] < 0:
+            caller = getframeinfo(stack()[1][0])
+            print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Value Error (tuple below 0)"))
+            exit()
+    else:
+        caller = getframeinfo(stack()[1][0])
+        print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Type Error (" + Fore.RED + f"{type(embed_color).__name__}"+ Style.RESET_ALL +" -> " + Fore.GREEN + "str/tuple"+ Style.RESET_ALL +")"))
         exit()
     loop = asyncio.new_event_loop()
     loop.run_until_complete(Text(url, message, embed_color, error))
@@ -184,11 +199,13 @@ def message(message, embed_color=default_embed_color, url=webhook_url, error=Fal
 
 def image(url=webhook_url):
     if isinstance(url, str):
-        if url[:33] != "https://discord.com/api/webhooks/":
-            print("Your webhook url is invalid!")
+        if url[:33] != "https://discord.com/api/webhooks/":    
+            caller = getframeinfo(stack()[1][0])
+            print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Value Error (Invalid Webhook URL)"))
             exit()
     else:
-        print(f"The webhook url is supposed to be type 'str' not '{type(url).__name__}'!")
+        caller = getframeinfo(stack()[1][0])
+        print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Type Error (" + Fore.RED + f"{type(url).__name__}"+ Style.RESET_ALL +" -> " + Fore.GREEN + "str"+ Style.RESET_ALL +")"))
         exit()
     loop = asyncio.new_event_loop()
     loop.run_until_complete(Image_(url))
@@ -198,7 +215,7 @@ def mention_mess(text, color=(255, 0, 0)):
     message(text, color, webhook_url, True)
     image()
 
-import time 
+import time
 time.sleep(5)
 pys.screenshot(image_path)
 
