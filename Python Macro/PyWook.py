@@ -8,8 +8,7 @@ import aiohttp
 import pyscreeze as pys
 from PIL import Image
 from inspect import getframeinfo, stack
-from colorama import Fore, Back, Style
-import requests
+from colorama import Fore, Style
 
 
 ################################
@@ -17,6 +16,8 @@ import requests
 ################################
 
 default_webhook_url = ""
+
+discord_bot_token = ""
 
 show_time = True
 
@@ -35,6 +36,8 @@ custom_gui = False
 default_embed_color = (55, 103, 246)
 
 file_name = ""
+
+current_task = ""
 
 # You can replace 'default_embed_color' with words/presets:
 presets = ("red", "blue", "green", "light red", "light blue", "light green", "dark red", "dark blue", "dark green", "white", "black", "magenta", "cyan", "yellow", "orange", "purple")
@@ -207,6 +210,7 @@ def image(url=webhook_url):
         caller = getframeinfo(stack()[1][0])
         print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Type Error (" + Fore.RED + f"{type(url).__name__}"+ Style.RESET_ALL +" -> " + Fore.GREEN + "str"+ Style.RESET_ALL +")"))
         exit()
+    pys.screenshot(image_path)
     loop = asyncio.new_event_loop()
     loop.run_until_complete(Image_(url))
     loop.close()
@@ -214,10 +218,6 @@ def image(url=webhook_url):
 def mention_mess(text, color=(255, 0, 0)):
     message(text, color, webhook_url, True)
     image()
-
-import time
-time.sleep(5)
-pys.screenshot(image_path)
 
 
 ################################
