@@ -77,43 +77,16 @@ current_task = ""
 # You can replace 'default_embed_color' with words/presets:
 presets = ("red", "blue", "green", "light red", "light blue", "light green", "dark red", "dark blue", "dark green", "white", "black", "magenta", "cyan", "yellow", "orange", "purple")
 
+end_macro = False
+
+start_macro_remotely = False
+
 
 ################################
 # PyWook Class
 ################################
 
-class PyWook:
-
-    def __init__(self):
-
-        self.default_webhook_url = default_webhook_url
-
-        self.discord_bot_token = discord_bot_token
-
-        self.show_time = show_time
-
-        self.webhook_username = webhook_username
-
-        self.custom_webhook_user = custom_webhook_user
-
-        self.image_path = image_path
-
-        self.user_id = user_id
-
-        self.webhook_gui = webhook_gui
-
-        self.custom_gui = custom_gui
-
-        self.default_embed_color = default_embed_color
-
-        self.file_name = file_name
-
-        self.current_task = current_task
-
-        # You can replace 'default_embed_color' with words/presets:
-        self.presets = ("red", "blue", "green", "light red", "light blue", "light green", "dark red", "dark blue", "dark green", "white", "black", "magenta", "cyan", "yellow", "orange", "purple")
-
-    def str_to_int_color(color):
+def str_to_int_color(color):
         if isinstance(color, str):
             color = color.lower()
             match color:
@@ -151,49 +124,49 @@ class PyWook:
                     color = (162, 5, 247)
         return color
     
-    def debug_stuff(self):
 
-        if self.webhook_username == "":
-            self.custom_webhook_user = False
 
-        if self.default_webhook_url == "":
-            if self.webhook_gui == True:
-                from tkinter import tk
-                start_setup = Webhook_Gui()
-                self.webhook_url = start_setup.OK_BUTTON()
-            else:
-                print("Webhook URL is set to null!")
-                print("Either manually input your Webhook into 'default_webhook_gui' or set 'webhook_gui' to True!")
-                exit()
-        else:
-            webhook_url = self.default_webhook_url
+if webhook_username == "":
+    custom_webhook_user = False
 
-    async def Text(self, url, message, embed_color, error=False):
+if default_webhook_url == "":
+    if webhook_gui == True:
+        from tkinter import tk
+        start_setup = Webhook_Gui()
+        webhook_url = start_setup.OK_BUTTON()
+    else:
+        print("Webhook URL is set to null!")
+        print("Either manually input your Webhook into 'default_webhook_gui' or set 'webhook_gui' to True!")
+        exit()
+else:
+    webhook_url = default_webhook_url
+
+async def Text(url, message, embed_color, error=False):
         async with aiohttp.ClientSession() as session:
             webhook = Webhook.from_url(url, session = session)
-            if self.show_time == True:
+            if show_time == True:
                 from datetime import datetime
                 now = datetime.now()
                 current_time = now.strftime("%H:%M:%S")
                 message = f"[{current_time}]  {message}"
             embed = discord.Embed(title=message, color=discord.Color.from_rgb(embed_color[0], embed_color[1], embed_color[2]))
-            if self.custom_webhook_user == True:
-                await webhook.send(embed=embed, username=self.webhook_username)
+            if custom_webhook_user == True:
+                await webhook.send(embed=embed, username=webhook_username)
             else:
                 await webhook.send(embed=embed)
             if error == True:
-                await webhook.send(f"<@{self.user_id}>")
+                await webhook.send(f"<@{user_id}>")
 
-    async def Image_(self, url):
+async def Image_(url):
         async with aiohttp.ClientSession() as session:
             webhook = Webhook.from_url(url, session = session)
-            file = discord.File(fp=self.image_path)
-            if self.custom_webhook_user == True:
-                await webhook.send(file=file, username=self.webhook_username)
+            file = discord.File(fp=image_path)
+            if custom_webhook_user == True:
+                await webhook.send(file=file, username=webhook_username)
             else:
                 await webhook.send(file=file)
 
-    def message(message, embed_color=default_embed_color, url=default_webhook_url, error=False):
+def message(message, embed_color=default_embed_color, url=default_webhook_url, error=False):
         if not isinstance(message, str):
             caller = getframeinfo(stack()[1][0])
             print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Type Error (" + Fore.RED + f"{type(message).__name__}"+ Style.RESET_ALL +" -> " + Fore.GREEN + "str"+ Style.RESET_ALL +")"))
@@ -214,7 +187,7 @@ class PyWook:
                 print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Value Error (invalid string)"))
                 exit()
 
-            embed_color = PyWook.str_to_int_color(embed_color)
+            embed_color = str_to_int_color(embed_color)
         elif isinstance(embed_color, tuple):
             if not len(embed_color) == 3:
                 caller = getframeinfo(stack()[1][0])
@@ -232,12 +205,11 @@ class PyWook:
             caller = getframeinfo(stack()[1][0])
             print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Type Error (" + Fore.RED + f"{type(embed_color).__name__}"+ Style.RESET_ALL +" -> " + Fore.GREEN + "str/tuple"+ Style.RESET_ALL +")"))
             exit()
-        pywook = PyWook()
         loop = asyncio.new_event_loop()
-        loop.run_until_complete(pywook.Text(url, message, embed_color, error))
+        loop.run_until_complete(Text(url, message, embed_color, error))
         loop.close()
 
-    def image(url=default_webhook_url):
+def image(url=default_webhook_url):
         if isinstance(url, str):
             if url[:33] != "https://discord.com/api/webhooks/":    
                 caller = getframeinfo(stack()[1][0])
@@ -247,49 +219,14 @@ class PyWook:
             caller = getframeinfo(stack()[1][0])
             print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Type Error (" + Fore.RED + f"{type(url).__name__}"+ Style.RESET_ALL +" -> " + Fore.GREEN + "str"+ Style.RESET_ALL +")"))
             exit()
-        pywook = PyWook()
         pys.screenshot(image_path)
         loop = asyncio.new_event_loop()
-        loop.run_until_complete(pywook.Image_(url))
+        loop.run_until_complete(Image_(url))
         loop.close()
 
-    def mention_mess(self, text, color=(255, 0, 0)):
-        self.message(text, color, self.webhook_url, True)
-        self.image()
-
-def END():
-    exit()
-
-def ROBLOX_START_UP():
-    pyw = PyWook()
-    from time import sleep
-
-    pyw.message("Opening Roblox...", 'light blue')
-
-    pag.press("winleft")
-
-    sleep(2)
-
-    pag.write("opera gx")     # Browser Name
-
-    pag.press("enter")
-
-    sleep(5)
-
-    pag.leftClick(960, 50, 1)
-
-    pag.write("https://www.roblox.com/share?code=a0962317a9359743aef5161a2a3ea217&type=Server")           # Roblox Link
-
-    sleep(1)
-
-    pag.press("enter")
-
-    sleep(5)
-
-    pyw.message("Roblox Opened!", 'purple')
-
-    sleep(8)
-
+def mention_mess(text, color=(255, 0, 0)):
+        message(text, color, webhook_url, True)
+        image()
 
 ################################
 # HELP FUNCTION
