@@ -2,6 +2,7 @@ from discord import Intents, Client, Message, File
 from Bot_responses import get_response
 import PyWook
 import pyscreeze as pys
+import Macro
 
 intents: Intents = Intents.default()
 intents.message_content = True
@@ -17,13 +18,20 @@ async def send_message(message_: Message, user_message: str) -> None:
 
     lowered = user_message.lower()
 
+    if 'start' in lowered:
+        try:
+            await message_.author.send("Starting Macro...") if is_private else await message_.channel.send("Starting Macro...")
+        except Exception as e:
+            print(e)
+        Macro.__name__ = "__main__"       
+
     if 'exit' in lowered:
         try:
             await message_.author.send("Ending Macro...") if is_private else await message_.channel.send("Ending Macro...")
         except Exception as e:
             print(e)
-        PyWook.END()
-        exit()      # This throws an error but still works so idrc
+        PyWook.start_macro_remotely = False
+        PyWook.end_macro = True
 
     if 'image' in lowered:
         try:
