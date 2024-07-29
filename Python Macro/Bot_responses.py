@@ -11,6 +11,8 @@ def get_response(user_input: str) -> str:
         return f'You rolled: {randint(1, 6)}'
     elif 'image' in lowered:
         return "Alright."
+    elif 'version' in lowered:
+        return "I am version 1.0!"
     elif 'who' in lowered:
         return """
         I am Py-Bot, a discord bot designed by EvilPiza on GitHub. My main purpose is to send images to you while your away from your PC!
