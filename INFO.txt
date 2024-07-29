@@ -16,6 +16,7 @@ user_id				 < This has to equal the user who wants to be mentioned from mention_
 
 image_path			 < This is the path of where the screenshot is stored, it reuses the same image.
 
+discord_bot_token   < If your using a bot, this has to be set to the token, make sure its in quotes (str)
 
 Some optional variables that aren't as important but still exist are:
 
