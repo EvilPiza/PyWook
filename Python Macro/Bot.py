@@ -18,22 +18,21 @@ async def send_message(message_: Message, user_message: str) -> None:
 
     lowered = user_message.lower()
 
-    if 'start' in lowered:
+    if '$start' in lowered:
         try:
             await message_.author.send("Starting Macro...") if is_private else await message_.channel.send("Starting Macro...")
         except Exception as e:
             print(e)
         Macro.__name__ = "__main__"       
 
-    if 'exit' in lowered:
+    if '$exit' in lowered:
         try:
             await message_.author.send("Ending Macro...") if is_private else await message_.channel.send("Ending Macro...")
         except Exception as e:
             print(e)
-        PyWook.start_macro_remotely = False
         PyWook.end_macro = True
 
-    if 'image' in lowered:
+    if '$image' in lowered:
         try:
             pys.screenshot(PyWook.image_path)
             await message_.author.send(file=File(fp=PyWook.image_path)) if is_private else await message_.channel.send(file=File(fp=PyWook.image_path))
