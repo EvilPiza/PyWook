@@ -30,8 +30,7 @@ async def send_message(message_: Message, user_message: str) -> None:
             await message_.author.send("Ending Macro...") if is_private else await message_.channel.send("Ending Macro...")
         except Exception as e:
             print(e)
-        PyWook.end_macro = True
-
+            
     if '$image' in lowered:
         try:
             pys.screenshot(PyWook.image_path)
