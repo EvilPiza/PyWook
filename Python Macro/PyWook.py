@@ -10,7 +10,6 @@ from PIL import Image
 from inspect import getframeinfo, stack
 from colorama import Fore, Style
 from tkinter import Tk as tk
-import pyautogui as pag
 
 
 ################################
@@ -76,10 +75,6 @@ current_task = ""
 
 # You can replace 'default_embed_color' with words/presets:
 presets = ("red", "blue", "green", "light red", "light blue", "light green", "dark red", "dark blue", "dark green", "white", "black", "magenta", "cyan", "yellow", "orange", "purple")
-
-end_macro = False
-
-start_macro_remotely = False
 
 
 ################################
