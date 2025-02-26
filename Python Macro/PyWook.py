@@ -120,7 +120,6 @@ def str_to_int_color(color):
         return color
     
 
-
 if webhook_username == "":
     custom_webhook_user = False
 
@@ -137,91 +136,92 @@ else:
     webhook_url = default_webhook_url
 
 async def Text(url, message, embed_color, error=False):
-        async with aiohttp.ClientSession() as session:
-            webhook = Webhook.from_url(url, session = session)
-            if show_time == True:
-                from datetime import datetime
-                now = datetime.now()
-                current_time = now.strftime("%H:%M:%S")
-                message = f"[{current_time}]  {message}"
-            embed = discord.Embed(title=message, color=discord.Color.from_rgb(embed_color[0], embed_color[1], embed_color[2]))
-            if custom_webhook_user == True:
-                await webhook.send(embed=embed, username=webhook_username)
-            else:
-                await webhook.send(embed=embed)
-            if error == True:
-                await webhook.send(f"<@{user_id}>")
+    async with aiohttp.ClientSession() as session:
+        webhook = Webhook.from_url(url, session = session)
+        if show_time == True:
+            from datetime import datetime
+            now = datetime.now()
+            current_time = now.strftime("%H:%M:%S")
+            message = f"[{current_time}]  {message}"
+        embed = discord.Embed(title=message, color=discord.Color.from_rgb(embed_color[0], embed_color[1], embed_color[2]))
+        if custom_webhook_user == True:
+            await webhook.send(embed=embed, username=webhook_username)
+        else:
+            await webhook.send(embed=embed)
+        if error == True:
+            await webhook.send(f"<@{user_id}>")
 
 async def Image_(url):
-        async with aiohttp.ClientSession() as session:
-            webhook = Webhook.from_url(url, session = session)
-            file = discord.File(fp=image_path)
-            if custom_webhook_user == True:
-                await webhook.send(file=file, username=webhook_username)
-            else:
-                await webhook.send(file=file)
+    async with aiohttp.ClientSession() as session:
+        webhook = Webhook.from_url(url, session = session)
+        file = discord.File(fp=image_path)
+        if custom_webhook_user == True:
+            await webhook.send(file=file, username=webhook_username)
+        else:
+            await webhook.send(file=file)
 
 def message(message, embed_color=default_embed_color, url=default_webhook_url, error=False):
-        if not isinstance(message, str):
+    if not isinstance(message, str):
+        caller = getframeinfo(stack()[1][0])
+        print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Type Error (" + Fore.RED + f"{type(message).__name__}"+ Style.RESET_ALL +" -> " + Fore.GREEN + "str"+ Style.RESET_ALL +")"))
+        exit()
+    if isinstance(url, str):
+        if url[:33] != "https://discord.com/api/webhooks/":
             caller = getframeinfo(stack()[1][0])
-            print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Type Error (" + Fore.RED + f"{type(message).__name__}"+ Style.RESET_ALL +" -> " + Fore.GREEN + "str"+ Style.RESET_ALL +")"))
+            print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Value Error (Invalid Webhook URL)"))
             exit()
-        if isinstance(url, str):
-            if url[:33] != "https://discord.com/api/webhooks/":
-                caller = getframeinfo(stack()[1][0])
-                print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Value Error (Invalid Webhook URL)"))
-                exit()
-        else:
+    else:
+        caller = getframeinfo(stack()[1][0])
+        print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Type Error (" + Fore.RED + f"{type(url).__name__}"+ Style.RESET_ALL +" -> " + Fore.GREEN + "str"+ Style.RESET_ALL +")"))
+        exit()
+
+    if isinstance(embed_color, str):
+        if embed_color not in presets:
             caller = getframeinfo(stack()[1][0])
-            print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Type Error (" + Fore.RED + f"{type(url).__name__}"+ Style.RESET_ALL +" -> " + Fore.GREEN + "str"+ Style.RESET_ALL +")"))
+            print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Value Error (invalid string)"))
             exit()
 
-        if isinstance(embed_color, str):
-            if embed_color not in presets:
-                caller = getframeinfo(stack()[1][0])
-                print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Value Error (invalid string)"))
-                exit()
-
-            embed_color = str_to_int_color(embed_color)
-        elif isinstance(embed_color, tuple):
-            if not len(embed_color) == 3:
-                caller = getframeinfo(stack()[1][0])
-                print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Value Error (tuple has missing/overflow values)"))
-                exit() 
-            if not embed_color[0] <= 255 or not embed_color[1] <= 255 or not embed_color[2] <= 255:
-                caller = getframeinfo(stack()[1][0])
-                print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Value Error (tuple above 255)"))
-                exit()
-            elif embed_color[0] < 0 or embed_color[1] < 0 or embed_color[2] < 0:
-                caller = getframeinfo(stack()[1][0])
-                print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Value Error (tuple below 0)"))
-                exit()
-        else:
+        embed_color = str_to_int_color(embed_color)
+    elif isinstance(embed_color, tuple):
+        if not len(embed_color) == 3:
             caller = getframeinfo(stack()[1][0])
-            print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Type Error (" + Fore.RED + f"{type(embed_color).__name__}"+ Style.RESET_ALL +" -> " + Fore.GREEN + "str/tuple"+ Style.RESET_ALL +")"))
+            print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Value Error (tuple has missing/overflow values)"))
+            exit() 
+        if not embed_color[0] <= 255 or not embed_color[1] <= 255 or not embed_color[2] <= 255:
+            caller = getframeinfo(stack()[1][0])
+            print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Value Error (tuple above 255)"))
             exit()
-        loop = asyncio.new_event_loop()
-        loop.run_until_complete(Text(url, message, embed_color, error))
-        loop.close()
+        elif embed_color[0] < 0 or embed_color[1] < 0 or embed_color[2] < 0:
+            caller = getframeinfo(stack()[1][0])
+            print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Value Error (tuple below 0)"))
+            exit()
+    else:
+        caller = getframeinfo(stack()[1][0])
+        print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Type Error (" + Fore.RED + f"{type(embed_color).__name__}"+ Style.RESET_ALL +" -> " + Fore.GREEN + "str/tuple"+ Style.RESET_ALL +")"))
+        exit()
+    loop = asyncio.new_event_loop()
+    loop.run_until_complete(Text(url, message, embed_color, error))
+    loop.close()
 
 def image(url=default_webhook_url):
-        if isinstance(url, str):
-            if url[:33] != "https://discord.com/api/webhooks/":    
-                caller = getframeinfo(stack()[1][0])
-                print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Value Error (Invalid Webhook URL)"))
-                exit()
-        else:
+    if isinstance(url, str):
+        if url[:33] != "https://discord.com/api/webhooks/":    
             caller = getframeinfo(stack()[1][0])
-            print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Type Error (" + Fore.RED + f"{type(url).__name__}"+ Style.RESET_ALL +" -> " + Fore.GREEN + "str"+ Style.RESET_ALL +")"))
+            print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Value Error (Invalid Webhook URL)"))
             exit()
-        pys.screenshot(image_path)
-        loop = asyncio.new_event_loop()
-        loop.run_until_complete(Image_(url))
-        loop.close()
+    else:
+        caller = getframeinfo(stack()[1][0])
+        print("File '%s' - Line %d - %s" % (caller.filename, caller.lineno, "Type Error (" + Fore.RED + f"{type(url).__name__}"+ Style.RESET_ALL +" -> " + Fore.GREEN + "str"+ Style.RESET_ALL +")"))
+        exit()
+    pys.screenshot(image_path)
+    loop = asyncio.new_event_loop()
+    loop.run_until_complete(Image_(url))
+    loop.close()
 
 def mention_mess(text, color=(255, 0, 0)):
-        message(text, color, webhook_url, True)
-        image()
+    message(text, color, webhook_url, True)
+    image()
+
 
 ################################
 # HELP FUNCTION
@@ -242,11 +242,11 @@ def help():
 
           IMPORTANT VARIABLES:
 
-          default_webhook_url           < Set this to a webhook url, make sure it's a str
+          default_webhook_url           < Set this to a webhook url, make sure it's a string
 
           image_path                    < Set this to a path, ex: "C:/users/John Doe/Desktop/Secret Coding Stash/image.png"
 
-          user_id                       < Set this to a discord user id (should be set to an int, NOT str)
+          user_id                       < Set this to a discord user id (should be set to an number, NOT words!)
 
         ----------------------------------------------------------
           """)
